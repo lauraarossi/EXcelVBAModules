@@ -1,0 +1,39 @@
+Public Sub IndexMatch()
+
+'--------------------------------------------------------------------
+' This sub carries out an index match between data in separate sheets
+'--------------------------------------------------------------------
+
+Dim DataSheet, LookupSheet, SourceCol, SourceStartRow, DestinationCol, DestinationRng, MatchingValuesRng, Header As String
+Dim SourceRngEnd As Range
+Dim DestinationEndRow, HeadersInt, i As Integer
+Dim Precision As Integer
+
+'----Parameters. Update before running---'
+Header = "Lookup Values" 'Rename to whatever the looked up values should be called
+DataSheet = "Sheet1" 'Include sheet you are working on if not this
+LookupSheet = "Sheet2" 'Include lookup sheet
+SourceCol = "B" 'Set the column with values to look up in here. e.g. "A".
+SourceStartRow = "1"
+DestinationCol = "J"
+MatchingValuesRng = "B:B" 'Set the range of the values to lookup with
+HeadersInt = 2 'Set to 1 if there's no headers, to if there is
+Precision = 0 'Set to 0 for exact match, -1 for closest low, 1 for closest high
+
+'----Function---'
+
+With Sheets(DataSheet)
+    Set SourceRngEnd = Range(SourceCol & SourceStartRow).End(xlDown)
+    DestinationEndRow = Range(Range(SourceCol & SourceStartRow), SourceRngEnd).Count
+    DestinationRng = DestinationCol & HeadersInt & ":" & DestinationCol & CStr(DestinationEndRow)
+        If HeadersInt > 1 Then
+            With .Range(DestinationCol & "1")
+                .Value = Header
+            End With
+        End If
+    For i = 1 To (Range(Range(SourceCol & SourceStartRow), SourceRngEnd).Count - 1)
+        Range(DestinationRng).Cells(i, 1).Formula = "=index(" & LookupSheet & "!" & MatchingValuesRng & ",match(" & SourceCol & (i + 1) & "," & MatchingValuesRng & "," & Precision & "),1)"
+    Next
+End With
+End Sub
+
