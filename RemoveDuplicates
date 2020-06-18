@@ -1,0 +1,31 @@
+Public Sub RemoveDuplicates()
+
+'--------------------------------------------
+' This sub takes in a set of data and removes
+' duplicates based on one or many columns
+'--------------------------------------------
+
+Dim DataRng As String
+Dim DataSheet As String
+Dim ColCount As Integer
+Dim DuplicateColumns() As Variant
+Dim HeaderFlag As Variant
+
+
+'---Parameters. Change before running.---'
+
+DataSheet = "Sheet1" 'Include sheet you are working on if not this
+DataRng = "A:I" 'Set the range your data is in here. e.g. "A:B", "A3:B5".
+ColCount = 1 'Include here how many columns contian the duplicate values to remove
+ReDim DuplicateColumns(ColCount)
+DuplicateColumns = Array(9) 'Include the index number(s) of the column(s) you want to remove duplicates from
+HeaderFlag = xlYes 'If columns have headers use xlYes, otherwise xlNo. If unsure, xlGuess
+
+'---Function---'
+With Sheets(DataSheet)
+    With .Range(DataRng)
+        .Select
+        .RemoveDuplicates Columns:=Evaluate(DuplicateColumns), Header:=HeaderFlag
+    End With
+End With
+End Sub
