@@ -1,0 +1,49 @@
+Public Function RemoveDuplicates(DataSheet As String, DuplicateColumn As Integer, HeaderFlag As Variant, Optional DataStart As Variant, Optional OrderByColumn As Variant, Optional OrderByDirection As Variant)
+
+'--------------------------------------------
+' This sub takes in a set of data and removes
+' duplicates based on one or many columns
+'--------------------------------------------
+' Arguments:
+' DataSheet: datasheet the duplicates to remove are on
+' DuplicateColumn: clumn the duplicates to remove are on
+' HeaderFlag: xlYes is the data has headers, xlNo if the data has o headers, xlGuess if you don't know
+'DataStart (optional, default is A1) Cell where your data starts
+'OrderByColumn (optional, default is nothing) Column by which to orer the data before removing duplicates. Note: when removing duplicates this function keeps the first instance.
+'OrderByDirection (optional, default is xlDescending) Order xlAscending or xlDescending
+'--------------------------------------------
+
+Sheets(DataSheet).Select
+With Sheets(DataSheet)
+        If IsMissing(DataStart) Then
+            With .Range("A1")
+                .CurrentRegion.Select
+                If IsMissing(OrderByColumn) Then
+                    .RemoveDuplicates Columns:=Evaluate(DuplicateColumn), Header:=HeaderFlag
+                ElseIf IsMissing(OrderByDirection) Then
+                    .Sort key1:=Range(OrderByColumn), order1:=xlDescending, Header:=HeaderFlag
+                    .RemoveDuplicates Columns:=Evaluate(DuplicateColumn), Header:=HeaderFlag
+                Else
+                    .Sort key1:=Range(OrderByColumn), order1:=OrderByDirection, Header:=HeaderFlag
+                    .RemoveDuplicates Columns:=Evaluate(DuplicateColumn), Header:=HeaderFlag
+                End If
+            End With
+        Else
+            With .Range(DataStart)
+                .CurrentRegion.Select
+                    If IsMissing(OrderByColumn) Then
+                        .RemoveDuplicates Columns:=Evaluate(DuplicateColumn), Header:=HeaderFlag
+                    ElseIf IsMissing(OrderByDirection) Then
+                        .Sort key1:=Range(OrderByColumn & Rows.Count), order1:=xlDescending, Header:=HeaderFlag
+                        .RemoveDuplicates Columns:=Evaluate(DuplicateColumn), Header:=HeaderFlag
+                    Else
+                        .Sort key1:=Range(OrderByColumn & Rows.Count), order1:=OrderByDirection, Header:=HeaderFlag
+                        .RemoveDuplicates Columns:=Evaluate(DuplicateColumn), Header:=HeaderFlag
+                    End If
+            End With
+        End If
+    
+        
+End With
+
+End Function
