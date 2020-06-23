@@ -1,0 +1,15 @@
+Public Function WorksheetExists(ShtName As String, Optional wb As Workbook) As Boolean
+    If wb Is Nothing Then
+        Set wb = ThisWorkbook
+    Else
+        Workbooks(wb).Activate
+    End If
+    
+    For Each sht In ActiveWorkbook.Worksheets
+        If sht.Name = ShtName Then
+            WorksheetExists = True
+            Exit Function
+        End If
+    Next sht
+    WorksheetExists = False
+End Function
